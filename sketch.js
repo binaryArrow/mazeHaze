@@ -6,9 +6,10 @@
 
 
 let columns, rows; 
-let w = 40; //width and height of the square
+let w = 40; // width and height of a cell, changes also numbers of cells
 let grid ;
 let currentCell;
+let stack = [];
 
 
 function setup() {
@@ -16,7 +17,7 @@ function setup() {
     columns = width/w;
     rows = height/w;
 
-    //creating grid with 2d array
+    // creating grid with 2d array
     grid = new Array(columns);
     for (let index = 0; index < grid.length; index++) {
       grid[index] = new Array(rows);
@@ -34,67 +35,81 @@ function setup() {
     currentCell = grid[0][0];
   }
   
+
+
+
+
+
   function draw() {
-    background(60); // background (color)
+    background(60);                             // background (color)
+    frameRate(5)
 
   // draw grid
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid.length; j++) {
     grid[i][j].show();
+    }
   }
+    currentCell.visited = true;                 // mark currentcell as visited
+    currentCell.highlight();
+    let next = currentCell.selectNeighbor();    // select neighbor of currentCell
+
+
+    if (next) {
+
+      next.visited = true;
+
+      stack.push(currentCell);
+
+      removeWall(currentCell, next);
+      currentCell = next;
+    } else if (stack.length > 0) {
+
+      currentCell = stack.pop();;
+
+
+    }                     
+
+    
+
+  }
+  
+
+  
+
+
+function removeWall( srcWall, destWall) {
+  if (srcWall.i > destWall.i && srcWall.j == destWall.j) {      // to top
+    srcWall.walls[0] = false;
+    destWall.walls[2] = false;
+  }
+
+  if (srcWall.i == destWall.i && srcWall.j < destWall.j) {      // to right
+    srcWall.walls[1] = false;
+    destWall.walls[3] = false;
+  }
+
+  if (srcWall.i < destWall.i && srcWall.j == destWall.j) {      // to bottom
+    srcWall.walls[2] = false;
+    destWall.walls[0] = false;
+  }
+  
+  if (srcWall.i == destWall.i && srcWall.j > destWall.j) {      // to left
+    srcWall.walls[3] = false;
+    destWall.walls[1] = false;
+  }
+
 }
-    currentCell.visited = true;
-    let next = currentCell.selectNeighbor();
-    currentCell = next;
-
-  }
-  
-
-  
-
-
-  /**
-   * 
-   * @param { column number } i 
-   * @param { row number } j
-   */
-  function Cell(i, j) {
-    this.i = i; // position
-    this.j = j; // position
-    this.walls = [true, true, true, true]; // top, right, bottom, left
-    this.visited = false; // mark cell as visited
-
-
-    /**
-     * draw the walls of the cell
-     */
-    this.show = function show() {
-      let x = this.j*w; // x position
-      let y = this.i*w; // y position
-
-      stroke(255); // color of outlines (walls)
-
-      line(x        , y        , x + w   , y); // top wall
-      line(x + w    , y        , x + w   , y + w); // right wall
-      line(x + w    , y + w    , x       , y + w); // bottom wall
-      line(x        , y + w    , x       , y); // left wall
-
-           
-      if (this.visited == true) {
-        fill(41, 232, 124);
-        square(x, y, w);
-
-      }
-    }
-
-    this.selectNeighbor = function selectNeighbor() {
-      let neighbors = []; // neighbors array to pick from randomly
-
-      // TODO: find top, right, left, bot neighbor and push to neighbor array
-
-
-    }
 
 
 
-  }
+
+
+
+
+
+
+
+
+
+
