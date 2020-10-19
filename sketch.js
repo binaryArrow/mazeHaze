@@ -42,7 +42,7 @@ function setup() {
 
   function draw() {
     background(60);                             // background (color)
-    frameRate(5)
+    //frameRate(5)
 
   // draw grid
   for (let i = 0; i < grid.length; i++) {

@@ -55,7 +55,7 @@
            
       if (this.visited) {  
         noStroke();                   // if cell is visited, color green
-        fill(41, 232, 124);
+        fill(15, 114, 71);
         square(x, y, w);
 
       }
